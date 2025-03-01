@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import SelectMatch from './SelectMatch';
 
-const AddPlayerMatchStats = ({ players, matches }) => {
+const AddPlayerMatchStats = ({ players }) => {
   const [playerStats, setPlayerStats] = useState(
     players.map((player) => ({
       player_id: player.id,
@@ -17,8 +17,17 @@ const AddPlayerMatchStats = ({ players, matches }) => {
     }))
   );
 
+  const [matches, setMatches] = useState([]);
   const [selectedMatchId, setSelectedMatchId] = useState(null);
   const [filteredMatches, setFilteredMatches] = useState(matches);
+
+  useEffect(() => {
+    fetch('/api/get-matches')
+        .then((response) => response.json())
+        .then((data) => {
+            setMatches(data);
+        });
+}, []);
 
   useEffect(() => {
     const unfinishedMatches = matches.filter((match) => !match.stats_finished);
